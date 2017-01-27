@@ -21,7 +21,7 @@ First, array values in the second argument are merged weirdly with values in the
 
 ```
 // Two arrays are "merged" together by replacing values in the first array with values from
-// second, by index:
+// the second, by index:
 var dictA = { foo: ['owl', 'snake', 'fish' };
 var dictB = { foo: ['cat', 'dog']};
 _.merge(dictA, dictB);

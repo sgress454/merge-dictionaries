@@ -1,6 +1,6 @@
 {
   "name": "merge-dictionaries",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Recursively merge two dictionaries together",
   "main": "index.js",
   "scripts": {
