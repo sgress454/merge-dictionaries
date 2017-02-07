@@ -108,3 +108,23 @@ return _.merge(dictA, dictB, function(a, b) {
   }
 });
 ```
+
+## Help
+
+If you have questions or are having trouble, click [here](http://sailsjs.com/support).
+
+
+## Bugs &nbsp; [![NPM version](https://badge.fury.io/js/merge-dictionaries.svg)](http://npmjs.com/package/merge-dictionaries)
+
+To report a bug, [click here](http://sailsjs.com/bugs).
+
+
+## Contributing
+
+Please observe the guidelines and conventions laid out in the [Sails project contribution guide](http://sailsjs.com/documentation/contributing) when opening issues or submitting pull requests.
+
+[![NPM](https://nodei.co/npm/merge-dictionaries.png?downloads=true)](http://npmjs.com/package/merge-dictionaries)
+
+## License
+
+Like the [Sails framework](http://sailsjs.com), this package is free and open-source under the [MIT License](http://sailsjs.com/license).
