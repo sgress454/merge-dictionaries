@@ -22,7 +22,7 @@ First, array values in the second argument are merged weirdly with values in the
 ```
 // Two arrays are "merged" together by replacing values in the first array with values from
 // the second, by index:
-var dictA = { foo: ['owl', 'snake', 'fish' };
+var dictA = { foo: ['owl', 'snake', 'fish'] };
 var dictB = { foo: ['cat', 'dog']};
 _.merge(dictA, dictB);
 
@@ -65,7 +65,7 @@ var merged = _.merge(dictA, dictB);
 // Results in:
 // { foo: 'bar', nested: { empty: {} } }
 
-console.log(empty === merged.merged);
+console.log(empty === merged.nested.empty);
 // Results in:
 // false
 ```
