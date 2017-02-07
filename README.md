@@ -86,10 +86,10 @@ module.exports = ( function() {
   var publicData = {};
   return {
     // Expose the public data to the outside world.
-    somePublicData: {}
+    somePublicData: publicData
     // Declare a function for initializing the module.
     init: function() {
-      somePublicData.foo = 'bar';
+      publicData.foo = 'bar';
     }
   }
 } )()
