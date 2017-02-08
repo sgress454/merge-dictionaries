@@ -2,13 +2,11 @@ var _ = require('@sailshq/lodash');
 
 module.exports = function(dictA, dictB) {
   return _.merge(dictA, dictB, function(a, b) {
-    // For non-objects, arrays, and objects with no keys, just return the object reference.
-    // This prevents arrays from being merged together (or with strings) with horrible results,
-    // and prevents empty dictionary references from being broken.
-    if (!_.isObject(b) || _.isArray(b) || _.keys(b).length === 0) {
-      return b;
-    }
-    // Everything else will use the default merge strategy.  Things like functions, strings,
-    // etc. already work nicely.
+    // If `a` is not a POJO, or it's an empty POJO, just replace it with `b`.
+    // _.isPlainObject is fine here because we don't care about clobbering dictionaries that
+    // came from custom constructors; our use case is merging config files together, so any
+    // left-hand values should either be literals, POJOS or `undefined`.
+    if (!_.isPlainObject(a) || _.keys(a).length === 0) { return b; }
+    // For non-empty dictionaries (POJO or otherwise), use the default merge strategy.
   });
 };

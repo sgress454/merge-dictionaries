@@ -1,6 +1,6 @@
 # merge-dictionaries
 
-A wrapper around the Lodash 3 `.merge()` function that addresses some issues with arrays and empty dictionaries.
+A wrapper around the Lodash 3 `.merge()` function that addresses some issues with arrays and object references.  Intended for merging configuration files together.
 
 ### Usage
 
@@ -40,32 +40,18 @@ _.merge(dictA, dictB);
 // { foo: ['cat', 'dog', 'c', 'd', 'e'] }
 ```
 
-Second, dictionaries in the second argument that do not have corresponding values in the first argument are copied over by reference, _unless_ the dictionary is empty:
+Second, dictionaries in the second argument that do not have corresponding dictionary values in the first argument (or whose corresponding values are `{}`) are copied over by _value_ instead of by _reference_:
 
 ```
-// Non-empty dictionary object references are maintained:
 var dictA = { foo: 'bar' };
-var dictB = { owl: 'hoot'};
-var owl = dictB.owl;
+var dictB = { nested: { owl: 'hoot' } };
+var owl = dictB.nested; // <-- owl is { owl: 'hoot' }
 var merged = _.merge(dictA, dictB);
 
 // Results in:
-// { foo: 'bar', owl: 'hoot' }
+// { foo: 'bar', nested: { owl: 'hoot' } }
 
-console.log(owl === merged.owl);
-// Results in:
-// true
-
-// But empty dictionary object references are NOT maintained, even nested ones:
-var dictA = { foo: 'bar' };
-var dictB = { nested: { empty: {} } };
-var empty = dictB.nested.empty;
-var merged = _.merge(dictA, dictB);
-
-// Results in:
-// { foo: 'bar', nested: { empty: {} } }
-
-console.log(empty === merged.nested.empty);
+console.log(owl === merged.nested);
 // Results in:
 // false
 ```
@@ -99,15 +85,23 @@ If you call `mergedObj.someModule.init()` later, you might expect `mergedObj.som
 
 ### What&rsquo;s the solution?
 
-The solution is very simple, because the `_.merge()` function can take a third argument that allows you to customize the merge behavior.  We can use this to tell `_.merge()` to _only_ do its regular thing on objects that are _not_ arrays and that have keys.  The default behavior already works fine with regular expressions, functions, Buffers and other weird objects, so handling these two cases is all we need.  The actual code boils down to:
+The solution is very simple, because the `_.merge()` function can take a third argument that allows you to customize the merge behavior.  We can use this to tell `_.merge()` to _only_ do its regular thing when the left-hand value is a non-empty plain dictionary.  In all other cases, `a` is replaced by `b`.
 
-```
-return _.merge(dictA, dictB, function(a, b) {
-  if (!_.isObject(b) || _.isArray(b) || _.keys(b).length === 0) {
-    return b;
-  }
-});
-```
+> Keep in mind that this means that if `a` _looks_ like a dictionary, but was created by a custom constructor (i.e. it is not a &ldquo;plain&rdquo; dictionary, it will be replaced by `b`!  For example:
+>
+> ```
+> var myClass = function() {this.foo = 'bar'};
+> var obj1 = { abc: new myClass() };
+> // Result:
+> // { abc: { foo: 'bar' } }
+>
+> var obj2 = { abc: { owl: 'hoot' } };
+> var merged = mergeDictionaries(obj1, obj2);
+>
+> // Result:
+> // { abc: { owl: 'hoot' } }
+> ```
+
 
 ## Help
 

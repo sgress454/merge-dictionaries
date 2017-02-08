@@ -1,6 +1,7 @@
 var assert = require('assert');
 var _ = require('@sailshq/lodash');
 var mergeDictionaries = require('../');
+// var mergeDictionaries = _.merge;
 
 describe('basic usage', function() {
 
@@ -14,15 +15,55 @@ describe('basic usage', function() {
 
   });
 
-  it('should maintain object references when merging modules together', function() {
+  it('should merge non-plain-objects correctly', function() {
 
-    var dictA = { foo: 'bar' };
+    var constr = function() {this.abc = 123; return this;};
+    constr.prototype.foo = 'bar';
+    var dictA = { abc: new constr() };
+    var dictB = { abc: { owl: 'hoot' } };
+    var owl = dictB.abc;
+    var merged = mergeDictionaries(dictA, dictB);
+    assert(_.isEqual(merged.abc, { owl: 'hoot' } ), 'Result of merge was incorrect.');
+    assert(owl === merged.abc, '`nonEmpty` should be direct reference to `merged.foo`, but it\'s a different object!');
+
+  });
+
+
+  it('should maintain object references when merging modules together (empty dict)', function() {
+
+    var dictA = { foo: 'bar', nested: { empty: {} } };
     var dictB = { nested: { empty: {} } };
     var empty = dictB.nested.empty;
     var merged = mergeDictionaries(dictA, dictB);
 
     assert(_.isEqual(merged, { foo: 'bar', nested: { empty: {} } }), 'Result of merge was incorrect.');
     assert(empty === merged.nested.empty, '`empty` should be direct reference to `merged.nested.empty`, but it\'s a different object!');
+
+  });//</should maintain object references when merging modules together>
+
+  it('should maintain object references when merging modules together (non-empty dict)', function() {
+
+    var dictA = { foo: 'bar' };
+    var dictB = { nested: { nonEmpty: { owl: 'hoot' } } };
+    var nonEmpty = dictB.nested.nonEmpty;
+    var merged = mergeDictionaries(dictA, dictB);
+
+    assert(_.isEqual(merged, { foo: 'bar', nested: { nonEmpty: { owl: 'hoot' } } }), 'Result of merge was incorrect.');
+    assert(nonEmpty === merged.nested.nonEmpty, '`nonEmpty` should be direct reference to `merged.nested.nonEmpty`, but it\'s a different object!');
+
+  });//</should maintain object references when merging modules together>
+
+  it('should maintain object references when merging modules together (function w/ keys)', function() {
+
+    var fn = function(){};
+    fn.foo = 'bar';
+    var dictA = { foo: fn };
+    var dictB = { foo: { owl: 'hoot' } };
+    var owl = dictB.foo;
+    var merged = mergeDictionaries(dictA, dictB);
+
+    assert(_.isEqual(merged, { foo: { owl: 'hoot' } }), 'Result of merge was incorrect.');
+    assert(owl === merged.foo, '`nonEmpty` should be direct reference to `merged.foo`, but it\'s a different object!');
 
   });//</should maintain object references when merging modules together>
 
