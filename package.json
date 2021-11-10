@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "Recursively merge two dictionaries together",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sgress454/merge-dictionaries.git"
+  },
   "scripts": {
     "test": "mocha"
   },
